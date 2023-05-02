@@ -7,11 +7,15 @@ public class PlayerController : MonoBehaviour
     private const string horizontal_name = "Horizontal";
     private const string vertical_name = "Vertical";
    
-    [SerializeField] private float speed = 5f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private float speed = 5f;
+
     private Vector2 _direction;
     private string _animationRunState = "IsRun";
+    private string _animationUpState = "IsUp";
+    private string _animationSideState = "IsSide";
     private float _minInputValue = 0f;
 
     private void Update()
@@ -19,7 +23,41 @@ public class PlayerController : MonoBehaviour
         _direction.x = Input.GetAxis(horizontal_name);
         _direction.y = Input.GetAxis(vertical_name);
 
-        if (_direction.y > _minInputValue || _direction.x > _minInputValue || _direction.y < _minInputValue || _direction.x < _minInputValue)
+        SetAnimation();
+        Move();
+    }
+    private void Move()
+    {
+        rb.MovePosition(rb.position + _direction * speed * Time.deltaTime);
+    }   
+    
+    private void SetAnimation()
+    {
+        if(_direction.x > _minInputValue)
+        {
+            spriteRenderer.flipX = true;
+            animator.SetBool(_animationSideState, true);
+        }
+
+        if (_direction.x < _minInputValue)
+        {
+            spriteRenderer.flipX = false;
+            animator.SetBool(_animationSideState, true);
+        }
+
+        if(_direction.x == _minInputValue) animator.SetBool(_animationSideState, false);
+
+        if (_direction.y > _minInputValue)
+        {
+            animator.SetBool(_animationUpState, true);
+        }
+
+        else
+        {
+            animator.SetBool(_animationUpState, false);
+        }
+
+        if (_direction.y < _minInputValue)
         {
             animator.SetBool(_animationRunState, true);
         }
@@ -28,11 +66,5 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool(_animationRunState, false);
         }
-
-        Move();
     }
-    private void Move()
-    {
-        rb.MovePosition(rb.position + _direction * speed * Time.deltaTime);
-    }    
 }
