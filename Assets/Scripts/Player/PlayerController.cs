@@ -67,4 +67,12 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(_animationRunState, false);
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Monster>())
+        {
+            Debug.Log("Collision with Monster");
+        }
+    }
 }
