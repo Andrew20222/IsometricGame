@@ -11,31 +11,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
-        UpdateUI();
+        UpdateHealthBar();
     }
-
-    public void TakeDamage(int damage)
-    {
-        Health -= damage;
-        if(Health < 0f)
-        {
-            Die();
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.GetComponent<Monster>())
-        {
-            TakeDamage(collision.gameObject.GetComponent<Monster>().Damage);
-        }
-    }
-
-    private void UpdateUI()
+    private void UpdateHealthBar()
     {
         hpBar.value = Health;
-    }
-    private void Die()
-    {
-        Destroy(gameObject);
     }
 }

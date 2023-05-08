@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Monster : Enemy
 {
@@ -9,43 +6,50 @@ public class Monster : Enemy
     private float _scaleMonsterX = -0.5f;
     private float _scaleMonsterY = 0.5f;
     [SerializeField] private GameObject monster;
-    [SerializeField] private Slider hpBar;
+   
     private void Update()
     {
         Move();
         UpdateUI();
+        Die();
     }
     public override void Move()
     {
-        Rb.velocity = Vector3.left * Speed * _direction * Time.deltaTime;
+        Rb.velocity = _direction * Speed * Time.deltaTime * Vector3.left;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerAttack>())
+        if (collision.gameObject.GetComponent<PlayerHealth>())
         {
-            TakeDamage(collision.gameObject.GetComponent<PlayerAttack>().Damage);
+            Attack(ref collision.gameObject.GetComponent<PlayerHealth>().Health);
         }
     }
 
     private void UpdateUI()
     {
-        hpBar.value = Health;
+        HpBar.value = Health;
     }
 
-
-    private void TakeDamage(int damage)
+    private void Attack(ref int Health)
     {
-        Health -= damage;
-        if( Health < 0f)
+        Health -= Damage;
+        if(Health < 0f)
         {
-            Die();
+            CountPoint++;
+            SetCountPointUI();
         }
     }
 
     private void Die()
     {
-        Destroy(gameObject);
+        if(Health < 0f)
+            Destroy(gameObject);
+    }
+
+    private void SetCountPointUI()
+    {
+        Result.text = $"EnemyScore is {CountPoint}";
     }
 
     private void OnTriggerExit2D(Collider2D collision)
